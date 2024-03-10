@@ -29,7 +29,7 @@ export class LoginComponent
     this.form = new FormGroup({
       email: new FormControl('', Validators.required),
       password: new FormControl('', Validators.required)
-    });
+      });
   }
 
   onSubmit() {

@@ -29,7 +29,7 @@ export class AuthInterceptor implements HttpInterceptor {
     // send the request to the next handler
     return next.handle(req).pipe(
       catchError((error) => {
-        // Perform logout on 401 – Unauthorized HTTP response errors
+        // Perform logout on 401 - Unauthorized HTTP response errors
         if (error instanceof HttpErrorResponse && error.status === 401) {
           this.authService.logout();
           this.router.navigate(['login']);

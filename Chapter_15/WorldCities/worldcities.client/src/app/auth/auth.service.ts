@@ -10,7 +10,8 @@ import { LoginResult } from './login-result';
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(
+
+constructor(
     protected http: HttpClient) {
   }
 

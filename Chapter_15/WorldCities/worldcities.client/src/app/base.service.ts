@@ -23,6 +23,7 @@ export abstract class BaseService<T> {
     return environment.baseUrl + url;
   }
 }
+
 export interface ApiResult<T> {
   data: T[];
   pageIndex: number;

@@ -5,7 +5,7 @@ namespace WorldCities.Server.Data
     public class CountryDTO
     {
         #region Properties
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         public required string Name { get; set; }
 
