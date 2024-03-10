@@ -1,17 +1,17 @@
 using System.Security;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
-using WorldCities.Server.Data.Models;
 using WorldCities.Server.Data;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authorization;
+using WorldCities.Server.Data.Models;
 
 namespace WorldCities.Server.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    // [Authorize(Roles = "Administrator")]
+    [Authorize(Roles = "Administrator")]
     public class SeedController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -33,7 +33,6 @@ namespace WorldCities.Server.Controllers
             _env = env;
             _configuration = configuration;
         }
-
 
         [HttpGet]
         public async Task<ActionResult> Import()
@@ -249,6 +248,5 @@ namespace WorldCities.Server.Controllers
                 Users = addedUserList
             });
         }
-
     }
 }

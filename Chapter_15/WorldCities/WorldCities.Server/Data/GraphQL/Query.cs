@@ -58,5 +58,36 @@ namespace WorldCities.Server.Data.GraphQL
                     filterColumn,
                     filterQuery);
         }
+
+        /// <summary>
+        /// Gets all Countries (with ApiResult and DTO support).
+        /// </summary>
+        [Serial]
+        public async Task<ApiResult<CountryDTO>> GetCountriesApiResult(
+            [Service] ApplicationDbContext context,
+            int pageIndex = 0,
+            int pageSize = 10,
+            string? sortColumn = null,
+            string? sortOrder = null,
+            string? filterColumn = null,
+            string? filterQuery = null)
+        {
+            return await ApiResult<CountryDTO>.CreateAsync(
+                    context.Countries.AsNoTracking()
+                        .Select(c => new CountryDTO()
+                        {
+                            Id = c.Id,
+                            Name = c.Name,
+                            ISO2 = c.ISO2,
+                            ISO3 = c.ISO3,
+                            TotCities = c.Cities!.Count
+                        }),
+                    pageIndex,
+                    pageSize,
+                    sortColumn,
+                    sortOrder,
+                    filterColumn,
+                    filterQuery);
+        }
     }
 }

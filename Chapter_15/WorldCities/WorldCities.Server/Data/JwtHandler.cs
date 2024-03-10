@@ -42,8 +42,7 @@ namespace WorldCities.Server.Data
                 SecurityAlgorithms.HmacSha256);
         }
 
-        private async Task<List<Claim>> GetClaimsAsync(
-          ApplicationUser user)
+        private async Task<List<Claim>> GetClaimsAsync(ApplicationUser user)
         {
             var claims = new List<Claim>
             {

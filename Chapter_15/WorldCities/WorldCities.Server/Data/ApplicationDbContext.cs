@@ -1,19 +1,22 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿/*
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using WorldCities.Server.Data.Models;
+*/
+
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WorldCities.Server.Data.Models;
 
 namespace WorldCities.Server.Data
 {
-    public class ApplicationDbContext
-        : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-
         public ApplicationDbContext() : base()
         {
         }
 
-        public ApplicationDbContext(DbContextOptions options)
-         : base(options)
+        public ApplicationDbContext(DbContextOptions options) : base(options)
         {
         }
 
@@ -29,6 +32,5 @@ namespace WorldCities.Server.Data
 
         public DbSet<City> Cities => Set<City>();
         public DbSet<Country> Countries => Set<Country>();
-
     }
 }

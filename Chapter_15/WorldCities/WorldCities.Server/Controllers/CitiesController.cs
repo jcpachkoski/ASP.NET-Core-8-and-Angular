@@ -102,6 +102,7 @@ namespace WorldCities.Server.Controllers
         // POST: api/Cities
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        // [IgnoreAntiforgeryToken]
         [Authorize(Roles = "RegisteredUser")]
         public async Task<ActionResult<City>> PostCity(City city)
         {

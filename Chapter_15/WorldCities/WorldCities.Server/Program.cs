@@ -1,9 +1,11 @@
+/*
 using Microsoft.AspNetCore.Cors;
 using Microsoft.EntityFrameworkCore;
 using WorldCities.Server.Data;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.MSSqlServer;
+using System.Text;
 using WorldCities.Server.Data.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -11,6 +13,20 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using WorldCities.Server.Data.GraphQL;
 using Microsoft.AspNetCore.HttpOverrides;
+*/
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Serilog;
+using Serilog.Events;
+using Serilog.Sinks.MSSqlServer;
+using System.Text;
+using WorldCities.Server.Data;
+using WorldCities.Server.Data.GraphQL;
+using WorldCities.Server.Data.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +47,7 @@ builder.Host.UseSerilog((ctx, lc) => lc
     .WriteTo.Console()
     );
 
+// Add services to the container.
 builder.Services.AddControllers()
     //.AddJsonOptions(options =>
     //{
@@ -89,13 +106,13 @@ builder.Services.AddAuthentication(opt =>
     options.TokenValidationParameters = new TokenValidationParameters
     {
         RequireExpirationTime = true,
-        ValidateIssuer = true,
-        ValidateAudience = true,
+		ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+		ValidAudience = builder.Configuration["JwtSettings:Audience"],
+		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecurityKey"]!)),
+		ValidateIssuer = true,
+		ValidateAudience = true,
         ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
-        ValidAudience = builder.Configuration["JwtSettings:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecurityKey"]!))
+        ValidateIssuerSigningKey = true
     };
 }).AddBearerToken(IdentityConstants.BearerScheme);
 
@@ -133,7 +150,7 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
     | ForwardedHeaders.XForwardedProto
 });
 
-app.UseAuthentication(); 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseCors("AngularPolicy");

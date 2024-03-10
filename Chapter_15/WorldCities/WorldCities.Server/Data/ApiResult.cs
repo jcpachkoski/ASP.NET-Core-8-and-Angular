@@ -66,6 +66,7 @@ namespace WorldCities.Server.Data
             }
 
             var count = await source.CountAsync();
+
             if (!string.IsNullOrEmpty(sortColumn)
                 && IsValidProperty(sortColumn))
             {
@@ -117,11 +118,8 @@ namespace WorldCities.Server.Data
                 BindingFlags.IgnoreCase |
                 BindingFlags.Public |
                 BindingFlags.Instance);
-            if (prop == null && throwExceptionIfNotFound)
-                throw new NotSupportedException(
-                    string.Format(
-                        $"ERROR: Property '{propertyName}' does not exist.")
-                    );
+			if (prop == null && throwExceptionIfNotFound)
+			    throw new NotSupportedException(string.Format($"ERROR: Property '{propertyName}' does not exist."));
             return prop != null;
         }
         #endregion

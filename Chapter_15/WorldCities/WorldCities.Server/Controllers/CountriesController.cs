@@ -137,20 +137,28 @@ namespace WorldCities.Server.Controllers
             string fieldName,
             string fieldValue)
         {
+		    // Default approach (using strongly-typed LAMBA expressions)
             switch (fieldName)
             {
                 case "name":
-                    return _context.Countries.Any(
-                        c => c.Name == fieldValue && c.Id != countryId);
+                    return _context.Countries.Any(c => c.Name == fieldValue && c.Id != countryId);
                 case "iso2":
-                    return _context.Countries.Any(
-                        c => c.ISO2 == fieldValue && c.Id != countryId);
+                    return _context.Countries.Any(c => c.ISO2 == fieldValue && c.Id != countryId);
                 case "iso3":
-                    return _context.Countries.Any(
-                        c => c.ISO3 == fieldValue && c.Id != countryId);
+                    return _context.Countries.Any(c => c.ISO3 == fieldValue && c.Id != countryId);
                 default:
                     return false;
             }
+			
+			// Alternative approach (using System.Linq.Dynamic.Core)
+			/*
+            return (ApiResult<Country>.IsValidProperty(fieldName, true))
+                ? _context.Countries.Any(
+                    string.Format("{0} == @0 && Id != @1", fieldName),
+                    fieldValue,
+                    countryId)
+                : false;
+			*/
         }
     }
 }
