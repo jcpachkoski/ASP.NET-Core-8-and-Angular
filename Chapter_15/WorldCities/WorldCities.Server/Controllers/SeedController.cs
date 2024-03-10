@@ -11,6 +11,7 @@ namespace WorldCities.Server.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    // Comment out this line, below, to add Users, Cities, and Countries using https://localhost:40443/swagger/index.html then put it back in.
     [Authorize(Roles = "Administrator")]
     public class SeedController : ControllerBase
     {
