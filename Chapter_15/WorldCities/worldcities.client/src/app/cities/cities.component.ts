@@ -33,8 +33,7 @@ export class CitiesComponent implements OnInit {
 
   filterTextChanged: Subject<string> = new Subject<string>();
 
-  constructor(
-    private cityService: CityService) {
+  constructor(private cityService: CityService) {
   }
 
   ngOnInit() {
@@ -62,7 +61,6 @@ export class CitiesComponent implements OnInit {
   }
 
   getData(event: PageEvent) {
-
     var sortColumn = (this.sort)
       ? this.sort.active
       : this.defaultSortColumn;

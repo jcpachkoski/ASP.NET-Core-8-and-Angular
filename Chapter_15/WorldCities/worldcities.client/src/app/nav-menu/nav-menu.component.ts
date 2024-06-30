@@ -9,6 +9,7 @@ import { AuthService } from '../auth/auth.service';
   styleUrl: './nav-menu.component.scss'
 })
 export class NavMenuComponent implements OnInit, OnDestroy {
+
   private destroySubject = new Subject();
   isLoggedIn: boolean = false;
 

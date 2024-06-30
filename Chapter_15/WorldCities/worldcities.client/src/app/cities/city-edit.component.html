@@ -11,13 +11,13 @@
       </mat-error>
     </p>
 
-    <!—Name -->
+    <!-- Name -->
     <mat-form-field>
       <mat-label>Name:</mat-label>
       <input matInput formControlName="name" required
              placeholder="Type a name">
       <mat-error *ngFor="let error of getErrors(form.get('name')!,
-              'Name')">
+          'Name')">
         {{error}}
       </mat-error>
     </mat-form-field>

@@ -30,14 +30,14 @@ namespace WorldCities.Server.Controllers
             var user = await _userManager.FindByNameAsync(loginRequest.Email);
             if (user == null || !await _userManager.CheckPasswordAsync(user, loginRequest.Password))
                 return Unauthorized(new ApiLoginResult()
-                {
-                    Success = false,
-                    Message = "Invalid Email or Password."
+				{ 
+                    Success = false, 
+                    Message = "Invalid Email or Password." 
                 });
             var secToken = await _jwtHandler.GetTokenAsync(user);
             var jwt = new JwtSecurityTokenHandler().WriteToken(secToken);
             return Ok(new ApiLoginResult()
-            {
+			{ 
                 Success = true,
                 Message = "Login successful",
                 Token = jwt

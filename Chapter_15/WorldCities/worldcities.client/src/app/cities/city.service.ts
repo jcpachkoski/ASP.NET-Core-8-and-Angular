@@ -30,12 +30,12 @@ export class CityService
       .query({
         query: gql`
           query GetCitiesApiResult(
-              $pageIndex: Int!,
-              $pageSize: Int!,
-              $sortColumn: String,
-              $sortOrder: String,
-              $filterColumn: String,
-              $filterQuery: String) {
+            $pageIndex: Int!,
+            $pageSize: Int!,
+            $sortColumn: String,
+            $sortOrder: String,
+            $filterColumn: String,
+            $filterQuery: String) {
             citiesApiResult(
               pageIndex: $pageIndex
               pageSize: $pageSize
@@ -43,7 +43,7 @@ export class CityService
               sortOrder: $sortOrder
               filterColumn: $filterColumn
               filterQuery: $filterQuery
-            ) { 
+            ){ 
                data { 
                  id
                  name
@@ -52,15 +52,15 @@ export class CityService
                  countryId
                  countryName 
                },
-                pageIndex
-                pageSize
-                totalCount
-                totalPages
-                sortColumn
-                sortOrder
-                filterColumn
-                filterQuery
-              }
+               pageIndex
+               pageSize
+               totalCount
+               totalPages
+               sortColumn
+               sortOrder
+               filterColumn
+               filterQuery
+             }
           }
         `,
         variables: {
@@ -104,16 +104,16 @@ export class CityService
     return this.apollo
       .mutate({
         mutation: gql`
-        mutation UpdateCity($city: CityDTOInput!) {
-          updateCity(cityDTO: $city) { 
-            id
-            name
-            lat
-            lon
-            countryId
+          mutation UpdateCity($city: CityDTOInput!) {
+            updateCity(cityDTO: $city) { 
+              id
+              name
+              lat
+              lon
+              countryId
+            }
           }
-        }
-      `,
+        `,
         variables: {
           city: input
         }
@@ -125,16 +125,16 @@ export class CityService
     return this.apollo
       .mutate({
         mutation: gql`
-        mutation AddCity($city: CityDTOInput!) {
-          addCity(cityDTO: $city) { 
-            id 
-            name
-            lat
-            lon
-            countryId
+          mutation AddCity($city: CityDTOInput!) {
+            addCity(cityDTO: $city) { 
+              id 
+              name
+              lat
+              lon
+              countryId
+            }
           }
-        }
-      `,
+        `,
         variables: {
           city: item
         }
