@@ -15,7 +15,7 @@ constructor(
     protected http: HttpClient) {
   }
 
-  private tokenKey: string = "token";
+  private tokenKey: string = "auth_token";
 
   private _authStatus = new Subject<boolean>();
   public authStatus = this._authStatus.asObservable();
@@ -33,9 +33,9 @@ constructor(
       this.setAuthStatus(true);
   }
 
-  login(item: LoginRequest): Observable<LoginResult> {
+  login(loginRequest: LoginRequest): Observable<LoginResult> {
     var url = environment.baseUrl + "api/Account/Login";
-    return this.http.post<LoginResult>(url, item)
+    return this.http.post<LoginResult>(url, loginRequest)
       .pipe(tap(loginResult => {
         if (loginResult.success && loginResult.token) {
           localStorage.setItem(this.tokenKey, loginResult.token);
