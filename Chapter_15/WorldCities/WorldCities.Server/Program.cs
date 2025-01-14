@@ -1,20 +1,3 @@
-/*
-using Microsoft.AspNetCore.Cors;
-using Microsoft.EntityFrameworkCore;
-using WorldCities.Server.Data;
-using Serilog;
-using Serilog.Events;
-using Serilog.Sinks.MSSqlServer;
-using System.Text;
-using WorldCities.Server.Data.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authentication.BearerToken;
-using WorldCities.Server.Data.GraphQL;
-using Microsoft.AspNetCore.HttpOverrides;
-*/
-
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
@@ -29,8 +12,6 @@ using WorldCities.Server.Data.GraphQL;
 using WorldCities.Server.Data.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
 
 // Adds Serilog support
 builder.Host.UseSerilog((ctx, lc) => lc
@@ -85,17 +66,19 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequiredLength = 8;
 })
-    .AddApiEndpoints()
+    // .AddApiEndpoints()  Try this later to add registration, etc.
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-builder.Services.AddScoped<JwtHandler>();
-
-builder.Services.AddGraphQLServer()
-    .AddAuthorization()
-    .AddQueryType<Query>()
-    .AddMutationType<Mutation>()
-    .AddFiltering()
-    .AddSorting();
+// Add Authentication services & middleware
+/*
+builder.Services.AddAuthentication(opt =>
+{
+    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+	// May need this particular line.
+	options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme; 
+}).AddJwtBearer(options =>
+*/
 
 builder.Services.AddAuthentication(opt =>
 {
@@ -116,6 +99,15 @@ builder.Services.AddAuthentication(opt =>
     };
 }).AddBearerToken(IdentityConstants.BearerScheme);
 
+builder.Services.AddScoped<JwtHandler>();
+
+builder.Services.AddGraphQLServer()
+    .AddAuthorization()
+    .AddQueryType<Query>()
+    .AddMutationType<Mutation>()
+    .AddFiltering()
+    .AddSorting();
+
 var app = builder.Build();
 
 app.UseSerilogRequestLogging();
@@ -131,12 +123,12 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    //app.UseExceptionHandler("/Error");
-    //app.MapGet("/Error", () => Results.Problem());
-    //app.UseHsts();
+    app.UseExceptionHandler("/Error");
+    app.MapGet("/Error", () => Results.Problem());
+    app.UseHsts();
 }
 
-app.MapGet("/Throw", () => { throw new NotSupportedException(); });
+// app.MapGet("/Throw", () => { throw new NotSupportedException(); });
 
 app.UseHttpsRedirection();
 
@@ -155,7 +147,7 @@ app.UseAuthorization();
 
 app.UseCors("AngularPolicy");
 
-app.MapIdentityApi<ApplicationUser>();
+// app.MapIdentityApi<ApplicationUser>();
 app.MapControllers();
 
 app.MapGraphQL("/api/graphql");
@@ -163,6 +155,6 @@ app.MapGraphQL("/api/graphql");
 app.MapMethods("/api/heartbeat", new[] { "HEAD" },
     () => Results.Ok());
 
-app.MapFallbackToFile("/index.html");
+// app.MapFallbackToFile("/index.html");
 
 app.Run();

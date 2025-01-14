@@ -1,6 +1,6 @@
 ﻿namespace WorldCities.Server.Data
 {
-    public class ApiLoginResult
+    public class LoginResult
     {
         /// <summary>
         /// TRUE if the login attempt is successful, FALSE otherwise.

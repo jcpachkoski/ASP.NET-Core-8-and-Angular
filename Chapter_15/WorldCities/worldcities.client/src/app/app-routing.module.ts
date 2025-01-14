@@ -5,7 +5,7 @@ import { CitiesComponent } from './cities/cities.component';
 import { CityEditComponent } from './cities/city-edit.component';
 import { CountriesComponent } from './countries/countries.component';
 import { CountryEditComponent } from './countries/country-edit.component';
-import { LoginComponent } from './auth/login.component';
+import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './auth/auth.guard';
 
 const routes: Routes = [

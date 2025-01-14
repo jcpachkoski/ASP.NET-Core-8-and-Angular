@@ -10,6 +10,11 @@ namespace WorldCities.Server.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
+        /* For testing.
+        /* user@email.com, Sampl3Pa$$_User
+        * admin@email.com,Sampl3Pa$$_Admin
+        */
+
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly JwtHandler _jwtHandler;
@@ -25,18 +30,30 @@ namespace WorldCities.Server.Controllers
         }
 
         [HttpPost("Login")]
-        public async Task<IActionResult> Login(ApiLoginRequest loginRequest)
+        public async Task<IActionResult> Login(LoginRequest loginRequest)
         {
             var user = await _userManager.FindByNameAsync(loginRequest.Email);
             if (user == null || !await _userManager.CheckPasswordAsync(user, loginRequest.Password))
-                return Unauthorized(new ApiLoginResult()
+                return Unauthorized(new LoginResult()
 				{ 
                     Success = false, 
                     Message = "Invalid Email or Password." 
                 });
             var secToken = await _jwtHandler.GetTokenAsync(user);
-            var jwt = new JwtSecurityTokenHandler().WriteToken(secToken);
-            return Ok(new ApiLoginResult()
+
+            string jwt = string.Empty;
+            try
+            {
+                // Original
+                // var jwt = new JwtSecurityTokenHandler().WriteToken(secToken);
+                jwt = new JwtSecurityTokenHandler().WriteToken(secToken);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+
+            return Ok(new LoginResult()
 			{ 
                 Success = true,
                 Message = "Login successful",

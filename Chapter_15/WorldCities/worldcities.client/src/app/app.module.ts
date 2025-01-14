@@ -13,11 +13,10 @@ import { CitiesComponent } from './cities/cities.component';
 import { CountriesComponent } from './countries/countries.component';
 import { CityEditComponent } from './cities/city-edit.component';
 import { CountryEditComponent } from './countries/country-edit.component';
-import { LoginComponent } from './auth/login.component';
+import { LoginComponent } from './login/login.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { ConnectionServiceModule } from 'ng-connection-service';
 import { GraphQLModule } from './graphql.module';
-
 
 @NgModule({
   declarations: [
@@ -28,12 +27,13 @@ import { GraphQLModule } from './graphql.module';
     CountriesComponent,
     CityEditComponent,
     CountryEditComponent,
-    LoginComponent,
+    LoginComponent
   ],
   imports: [
-    BrowserModule, HttpClientModule,
-    AppRoutingModule,
+    BrowserModule,
     BrowserAnimationsModule,
+    HttpClientModule,
+    AppRoutingModule,
     AngularMaterialModule,
     ReactiveFormsModule,
     ServiceWorkerModule.register('ngsw-worker.js', {

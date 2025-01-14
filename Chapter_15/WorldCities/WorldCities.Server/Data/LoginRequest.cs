@@ -2,7 +2,7 @@
 
 namespace WorldCities.Server.Data
 {
-    public class ApiLoginRequest
+    public class LoginRequest
     {
         [Required(ErrorMessage = "Email is required.")]
         public required string Email { get; set; }

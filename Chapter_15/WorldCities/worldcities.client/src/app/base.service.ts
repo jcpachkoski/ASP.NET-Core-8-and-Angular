@@ -20,6 +20,7 @@ export abstract class BaseService<T> {
   abstract post(item: T): Observable<T>;
 
   protected getUrl(url: string) {
+    console.log('getUrl in base service returned: ', url);
     return environment.baseUrl + url;
   }
 }

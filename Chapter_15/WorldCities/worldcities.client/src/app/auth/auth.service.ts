@@ -1,31 +1,28 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject, tap } from 'rxjs';
-
+import { BehaviorSubject, Observable, tap, catchError } from 'rxjs';
 import { environment } from './../../environments/environment';
-import { LoginRequest } from './login-request';
-import { LoginResult } from './login-result';
+import { LoginRequest } from '../login/login-request';
+import { LoginResult } from '../login/login-result';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class AuthService {
 
-constructor(
-    protected http: HttpClient) {
-  }
+  constructor(private http: HttpClient) {}
 
   private tokenKey: string = "auth_token";
 
-  private _authStatus = new Subject<boolean>();
-  public authStatus = this._authStatus.asObservable();
-
-  isAuthenticated(): boolean {
-    return this.getToken() !== null;
-  }
+  private _authStatusSubject = new BehaviorSubject<boolean>(this.isAuthenticated());
+  public authStatus$ = this._authStatusSubject.asObservable();
 
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
+  }
+
+  isAuthenticated(): boolean {
+    return this.getToken() !== null;
   }
 
   init(): void {
@@ -34,22 +31,30 @@ constructor(
   }
 
   login(loginRequest: LoginRequest): Observable<LoginResult> {
-    var url = environment.baseUrl + "api/Account/Login";
+    const url = environment.baseUrl + 'api/Account/Login';
+    console.log('Login endpoint is: ' + url);
     return this.http.post<LoginResult>(url, loginRequest)
-      .pipe(tap(loginResult => {
-        if (loginResult.success && loginResult.token) {
-          localStorage.setItem(this.tokenKey, loginResult.token);
-          this.setAuthStatus(true);
-        }
-      }));
+    .pipe(tap(loginResult => {
+      if (loginResult.success && loginResult.token) {
+        localStorage.setItem(this.tokenKey, loginResult.token);
+        this.setAuthStatus(true);
+        console.log('Logged in');
+      }
+    }),
+    catchError(error => {
+      this.setAuthStatus(false);
+      throw error;
+    })
+    );
   }
 
-  logout() {
+  logout(): void {
     localStorage.removeItem(this.tokenKey);
     this.setAuthStatus(false);
+    console.log('Logged out');
   }
 
   private setAuthStatus(isAuthenticated: boolean): void {
-    this._authStatus.next(isAuthenticated);
+    this._authStatusSubject.next(isAuthenticated);
   }
 }

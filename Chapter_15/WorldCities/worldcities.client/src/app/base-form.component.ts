@@ -6,7 +6,7 @@ import { FormGroup, AbstractControl } from '@angular/forms';
 })
 export abstract class BaseFormComponent {
 
-  // the form model
+  // The form model
   form!: FormGroup;
 
   getErrors(
@@ -34,6 +34,5 @@ export abstract class BaseFormComponent {
     return errors;
   }
 
-  constructor() { }
-
+  constructor() {}
 }
