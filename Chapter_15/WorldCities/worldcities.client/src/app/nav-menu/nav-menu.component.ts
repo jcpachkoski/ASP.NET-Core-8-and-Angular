@@ -10,7 +10,7 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class NavMenuComponent implements OnInit, OnDestroy {
 
-  private destroySubject = new Subject();
+  private destroySubject = new Subject<boolean>();
   isLoggedIn: boolean = false;
 
   constructor(private authService: AuthService, private router: Router) {}
@@ -22,7 +22,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         this.isLoggedIn = result;
       })
   }
-  
+
   onLogout(): void {
     this.authService.logout();
     this.router.navigate(["/"]);
