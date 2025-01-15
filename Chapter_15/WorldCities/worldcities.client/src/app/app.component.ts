@@ -19,8 +19,8 @@ export class AppComponent implements OnInit {
   constructor(private authService: AuthService, private connectionService: ConnectionService) {}
 
   ngOnInit(): void {
-    console.log('environment.baseUrl is: ' + environment.baseUrl);
-    console.log('heartbeat url is: ' + environment.baseUrl + 'api/heartbeat');
+    console.log("environment.baseUrl is: " + environment.baseUrl);
+    console.log("heartbeat url is: " + environment.baseUrl + "api/heartbeat");
     this.authService.init();
     const options: ConnectionServiceOptions = {
       enableHeartbeat: true,

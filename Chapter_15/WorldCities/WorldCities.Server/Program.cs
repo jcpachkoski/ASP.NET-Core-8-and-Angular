@@ -155,6 +155,6 @@ app.MapGraphQL("/api/graphql");
 app.MapMethods("/api/heartbeat", new[] { "HEAD" },
     () => Results.Ok());
 
-// app.MapFallbackToFile("/index.html");
+app.MapFallbackToFile("/index.html");
 
 app.Run();
