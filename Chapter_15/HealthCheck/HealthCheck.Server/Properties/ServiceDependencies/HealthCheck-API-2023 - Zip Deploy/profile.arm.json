@@ -21,7 +21,7 @@
     },
     "resourceName": {
       "type": "string",
-      "defaultValue": "HealthCheck-API-2023",
+      "defaultValue": "HealthCheck-API-2025",
       "metadata": {
         "description": "Name of the main resource to be created by this template."
       }

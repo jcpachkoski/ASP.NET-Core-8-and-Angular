@@ -1,0 +1,44 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: first baseline;
+  padding-top: 40px;
+  height: 100vh;
+  background-color: #f4f4f4;
+  margin: 0px;
+}
+
+.login-card {
+  align-items: center;
+}
+
+/*
+.login-card {
+  width: 100%;
+  max-width: 350px;
+  padding: 20px;
+  align-items: center;
+  text-align: center;
+
+  h2 {
+    color: blue;
+    // margin-bottom: 16px;
+  }
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 25px;
+}
+*/
+
+mat-form-field {
+  display: block;
+  margin: 10px 0px;
+  padding-bottom: 20px;
+}
+
+mat-hint {
+  color: gray;
+  font-size: 12px;
+}

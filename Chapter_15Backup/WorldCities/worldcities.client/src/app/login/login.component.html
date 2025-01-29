@@ -1,0 +1,70 @@
+<div class="login-container">
+  <mat-card class="login-card" appearance="outlined">
+    <mat-card-header>
+      <mat-card-title>Hello, please log in!</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+        <div *ngIf="loginResult && !loginResult.success && loginResult.message">
+          <p>
+            <mat-error *ngIf="loginResult && !loginResult.success">
+              <strong>{{loginResult.message}}</strong>:
+            </mat-error>
+          </p>
+        </div>
+
+        <div>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Email:</mat-label>
+            <input
+              matInput type="email"
+              formControlName="email"
+              placeholder="Enter mail address"
+              required>
+
+              <!--Also works-->
+              <!--<mat-error *ngIf="form.get('email')?.hasError('required')">Email is required</mat-error>-->
+              <mat-error *ngFor="let error of getErrors(form.get('email')!, 'Email')">{{error}}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Password:</mat-label>
+            <input
+              matInput type="password"
+              formControlName="password"
+              (focus)="passwordFocused = true"
+              (blur)="passwordFocused = false"
+              aria-describedby="passwordHint"
+              placeholder="Enter password"
+              required>
+
+              <mat-hint id="passwordHint" *ngIf="passwordFocused">Password must be at least eight characters long.</mat-hint>
+
+              <!--Also works-->
+              <!--<mat-error *ngIf="form.get('password')?.hasError('required')">Password is required</mat-error>-->
+              <mat-error *ngFor="let error of getErrors(form.get('password')!, 'Password')">{{error}}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div>
+          <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
+            Login
+          </button>
+          <button mat-flat-button type="button" color="secondary" [routerLink]="['/']">
+            Cancel
+          </button>
+        </div>
+      </form>
+      <br>
+          <div>Test Users:</div>
+          <div>Email: user&#64;email.com</div>
+          <div>Password: Sampl3Pa$$_User</div>
+          <br>
+          <div>Email: admin&#64;email.com</div>
+          <div>Password: Sampl3Pa$$_Admin</div>
+  </mat-card-content>
+</mat-card>
+</div>

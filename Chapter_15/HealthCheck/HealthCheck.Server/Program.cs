@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Cors;
 using HealthCheck.Server;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,11 +9,21 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHealthChecks()
     .AddCheck("ICMP_01",
-        new ICMPHealthCheck("www.ryadel.com", 100))
+        new ICMPHealthCheck("crsoftware.biz", 100))
     .AddCheck("ICMP_02",
-        new ICMPHealthCheck("www.google.com", 100))
+        new ICMPHealthCheck("www.crsoftware.biz", 100))
     .AddCheck("ICMP_03",
-        new ICMPHealthCheck($"www.{Guid.NewGuid():N}.com", 100));
+        new ICMPHealthCheck("blog.crsoftware.biz", 100))
+    .AddCheck("ICMP_04",
+        new ICMPHealthCheck("www.blog.crsoftware.biz", 100))
+    .AddCheck("ICMP_05",
+        new ICMPHealthCheck("healthcheck-2025.crsoftware.biz", 100))
+    .AddCheck("ICMP_06",
+        new ICMPHealthCheck("www.healthcheck-2025.crsoftware.biz", 100))
+    .AddCheck("ICMP_07",
+        new ICMPHealthCheck("www.google.com", 100));
+    // .AddCheck("ICMP_08",
+    //     new ICMPHealthCheck($"www.{Guid.NewGuid():N}.com", 100));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -48,6 +59,16 @@ else
 }
 
 app.UseHttpsRedirection();
+
+// Invoke the UseForwardedHeaders middleware and configure it 
+// to forward the X-Forwarded-For and X-Forwarded-Proto headers.
+// NOTE: This must be put BEFORE calling UseAuthentication 
+// and other authentication scheme middlewares.
+// This is added to deploy on Nginx and Kestrel.
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
 app.UseAuthorization();
 
