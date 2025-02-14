@@ -1,18 +1,25 @@
-using Microsoft.AspNetCore.Cors;
+// using Microsoft.AspNetCore.Cors;
 using HealthCheck.Server;
 using Microsoft.AspNetCore.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddHealthChecks()
     .AddCheck("ICMP_01",
-        new ICMPHealthCheck("www.ryadel.com", 100))
+        new ICMPHealthCheck("crsoftware.biz", 100))
     .AddCheck("ICMP_02",
-        new ICMPHealthCheck("www.google.com", 100))
+        new ICMPHealthCheck("www.crsoftware.biz", 100))
+    .AddCheck("ICMP_03",
+        new ICMPHealthCheck("healthcheck-2025.crsoftware.biz", 100))
+    .AddCheck("ICMP_04",
+        new ICMPHealthCheck("healthcheck-api-2025.crsoftware.biz", 100))
+    .AddCheck("ICMP_05",
+        new ICMPHealthCheck("www.google.com", 100));
+    /*
     .AddCheck("ICMP_03",
         new ICMPHealthCheck($"www.{Guid.NewGuid():N}.com", 100));
+    */
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

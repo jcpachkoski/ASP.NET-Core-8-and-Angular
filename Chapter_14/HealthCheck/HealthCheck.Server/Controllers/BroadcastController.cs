@@ -9,9 +9,7 @@ namespace HealthCheck.Server.Controllers
     {
         private IHubContext<HealthCheckHub> _hub;
 
-        public BroadcastController(
-            IHubContext<HealthCheckHub> hub
-            )
+        public BroadcastController(IHubContext<HealthCheckHub> hub)
         {
             _hub = hub;
         }
