@@ -67,7 +67,7 @@ app.MapHub<HealthCheckHub>("/api/health-hub");
 app.MapGet("/api/broadcast/update2", async (IHubContext<HealthCheckHub> hub) =>
 {
     await hub.Clients.All.SendAsync("Update", "test");
-    return Results.Text("Update message sent.");
+    return Results.Text("Update2 message sent from SERVER.");
 });
 
 app.MapFallbackToFile("/index.html");

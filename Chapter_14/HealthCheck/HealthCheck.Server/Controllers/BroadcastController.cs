@@ -18,7 +18,7 @@ namespace HealthCheck.Server.Controllers
         public async Task<IActionResult> Update()
         {
             await _hub.Clients.All.SendAsync("Update", "test");
-            return Ok("Update message sent.");
+            return Ok("Update message sent from SERVER.");
         }
     }
 }
