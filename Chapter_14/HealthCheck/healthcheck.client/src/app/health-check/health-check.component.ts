@@ -7,17 +7,16 @@ import { HealthCheckService, Result } from './health-check.service';
   templateUrl: './health-check.component.html',
   styleUrls: ['./health-check.component.scss']
 })
-export class HealthCheckComponent implements OnInit, OnDestroy {
+export class HealthCheckComponent implements OnInit {
 
-  public result: Observable<Result | null>;
-  // private subscription: Subscription = new Subscription();
+  // This code was tested and all works.  Put in Chapter 15 and deploy it to the Linux Server.
+  result$: Observable<Result | null>;
 
-  constructor(
-    public service: HealthCheckService) {
-    this.result = this.service.result;
+  constructor(public service: HealthCheckService) {
+    this.result$ = this.service.result$;
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.service.startConnection();
     this.service.addDataListeners();
   }
@@ -26,8 +25,7 @@ export class HealthCheckComponent implements OnInit, OnDestroy {
     this.service.sendClientUpdate();
   }
 
-  ngOnDestroy() {
-    // this.subscription?.unsubscribe();
-    console.log("Unsubscribed and destroyed HealthCheckComponent.");
+  ngOnDestroy(): void {
+    this.service.ngOnDestroy();
   }
 }
