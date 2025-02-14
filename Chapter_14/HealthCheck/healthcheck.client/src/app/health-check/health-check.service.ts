@@ -2,7 +2,7 @@ import { Injectable, OnDestroy} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import * as signalR from "@microsoft/signalr";
 import { environment } from './../../environments/environment';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 
 export interface Result {
   checks: Check[];
@@ -26,6 +26,7 @@ export class HealthCheckService implements OnDestroy {
   private hubConnection!: signalR.HubConnection;
   private _result: Subject<Result> = new Subject<Result>();
   public result$ = this._result.asObservable();
+  subscription?: Subscription;
 
   /* Starts the SignalR connection. */
   startConnection(): void {
@@ -61,7 +62,7 @@ export class HealthCheckService implements OnDestroy {
   /* Fetches the latest health check data from the server. */
   updateData(): void {
     console.log("Fetching data...");
-    this.http.get<Result>(environment.baseUrl + 'api/health')
+    this.subscription = this.http.get<Result>(environment.baseUrl + 'api/health')
       .subscribe(result => {
         this._result.next(result);
         console.log(result);
@@ -80,5 +81,7 @@ export class HealthCheckService implements OnDestroy {
       this.hubConnection.stop().catch(err => console.error("Error stopping connection: ", err));
     }
     console.log("Stopped hub connection.");
+    this.subscription?.unsubscribe();
+    console.log("Unsubscribed from subscription in HealthCheckService.");
   }
 }
