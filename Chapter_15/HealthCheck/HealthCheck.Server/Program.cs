@@ -6,24 +6,21 @@ using Microsoft.AspNetCore.HttpOverrides;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddHealthChecks()
     .AddCheck("ICMP_01",
         new ICMPHealthCheck("crsoftware.biz", 100))
     .AddCheck("ICMP_02",
         new ICMPHealthCheck("www.crsoftware.biz", 100))
     .AddCheck("ICMP_03",
-        new ICMPHealthCheck("blog.crsoftware.biz", 100))
-    .AddCheck("ICMP_04",
-        new ICMPHealthCheck("www.blog.crsoftware.biz", 100))
-    .AddCheck("ICMP_05",
         new ICMPHealthCheck("healthcheck-2025.crsoftware.biz", 100))
-    .AddCheck("ICMP_06",
-        new ICMPHealthCheck("www.healthcheck-2025.crsoftware.biz", 100))
-    .AddCheck("ICMP_07",
+    .AddCheck("ICMP_04",
+        new ICMPHealthCheck("healthcheck-api-2025.crsoftware.biz", 100))
+    .AddCheck("ICMP_05",
         new ICMPHealthCheck("www.google.com", 100));
-    // .AddCheck("ICMP_08",
-    //     new ICMPHealthCheck($"www.{Guid.NewGuid():N}.com", 100));
+    /*
+    .AddCheck("ICMP_03",
+        new ICMPHealthCheck($"www.{Guid.NewGuid():N}.com", 100));
+    */
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -87,7 +84,7 @@ app.MapHub<HealthCheckHub>("/api/health-hub");
 app.MapGet("/api/broadcast/update2", async (IHubContext<HealthCheckHub> hub) =>
 {
     await hub.Clients.All.SendAsync("Update", "test");
-    return Results.Text("Update message sent.");
+    return Results.Text("Update2 message sent from SERVER.");
 });
 
 app.MapFallbackToFile("/index.html");

@@ -1,6 +1,7 @@
-// using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Cors;
 using HealthCheck.Server;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,8 +48,24 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    app.UseExceptionHandler("/Error");
+    app.MapGet("/Error", () => Results.Problem());
+    app.UseHsts();
+}
 
 app.UseHttpsRedirection();
+
+// Invoke the UseForwardedHeaders middleware and configure it 
+// to forward the X-Forwarded-For and X-Forwarded-Proto headers.
+// NOTE: This must be put BEFORE calling UseAuthentication 
+// and other authentication scheme middlewares.
+// This is added to deploy on Nginx and Kestrel.
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
 app.UseAuthorization();
 

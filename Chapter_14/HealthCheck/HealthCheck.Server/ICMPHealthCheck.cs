@@ -39,7 +39,7 @@ namespace HealthCheck.Server
             catch (Exception e)
             {
                 var err =
-                    $"ICMP failed: {e.Message}";
+                    $"ICMP to {Host} failed: {e.Message}";
                 return HealthCheckResult.Unhealthy(err);
             }
         }

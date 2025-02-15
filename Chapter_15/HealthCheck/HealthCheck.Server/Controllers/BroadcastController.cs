@@ -9,9 +9,7 @@ namespace HealthCheck.Server.Controllers
     {
         private IHubContext<HealthCheckHub> _hub;
 
-        public BroadcastController(
-            IHubContext<HealthCheckHub> hub
-            )
+        public BroadcastController(IHubContext<HealthCheckHub> hub)
         {
             _hub = hub;
         }
@@ -19,8 +17,8 @@ namespace HealthCheck.Server.Controllers
         [HttpGet]
         public async Task<IActionResult> Update()
         {
-            await _hub.Clients.All.SendAsync("Update", "test");
-            return Ok("Update message sent.");
+            await _hub.Clients.All.SendAsync("Update", "server test");
+            return Ok("Update message sent from SERVER.");
         }
     }
 }
