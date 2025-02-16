@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import * as signalR from "@microsoft/signalr";
 import { environment } from './../../environments/environment';
 import { Subject, Subscription } from 'rxjs';
+import { tap, takeUntil } from 'rxjs/operators';
 
 export interface Result {
   checks: Check[];
@@ -26,10 +27,11 @@ export class HealthCheckService implements OnDestroy {
   private hubConnection!: signalR.HubConnection;
   private _result: Subject<Result> = new Subject<Result>();
   public result$ = this._result.asObservable();
-  subscription?: Subscription;
+  // subscription?: Subscription;
+  private destroyed$ = new Subject<void>();
 
   /* Starts the SignalR connection. */
-  startConnection(): void {
+  startHubConnection(): void {
     // if (!this.hubConnection) {
       this.hubConnection = new signalR.HubConnectionBuilder()
         .configureLogging(signalR.LogLevel.Information)
@@ -42,7 +44,7 @@ export class HealthCheckService implements OnDestroy {
         .then(() => console.log("Connection started."))
         .catch((err: any) => console.error("Error starting connection: ", err));
     // }
-      this.updateData();
+    this.getHealthChecks();
   }
 
   /* Adds listeners for data updates from the server. */
@@ -50,19 +52,31 @@ export class HealthCheckService implements OnDestroy {
     console.log('Adding listeners');
     this.hubConnection.on('Update', (msg: string) => {
       console.log("Update issued by SERVER for: " + msg);
-      this.updateData();
+      this.getHealthChecks();
     });
 
     this.hubConnection.on('ClientUpdate', (msg: string) => {
       console.log("Update issued by CLIENT for: " + msg);
-      this.updateData();
+      this.getHealthChecks();
     });
   }
 
   /* Fetches the latest health check data from the server. */
-  updateData(): void {
+  /*
+  getHealthChecks(): void {
     console.log("Fetching data...");
     this.subscription = this.http.get<Result>(environment.baseUrl + 'api/health')
+      .subscribe(result => {
+        this._result.next(result);
+        console.log(result);
+      });
+  }
+  */
+
+  /* Fetches the latest health check data from the server. */
+  getHealthChecks(): void {
+    console.log("Fetching data...");
+    this.http.get<Result>(environment.baseUrl + 'api/health').pipe(takeUntil(this.destroyed$))
       .subscribe(result => {
         this._result.next(result);
         console.log(result);
@@ -75,13 +89,20 @@ export class HealthCheckService implements OnDestroy {
       .catch(err => console.error("Error sending client update: ", err));
   }
 
-  /* Cleans up subscriptions and connections. */
-  ngOnDestroy(): void {
+  stopHubConnection(): void {
     if (this.hubConnection) {
-      this.hubConnection.stop().catch(err => console.error("Error stopping connection: ", err));
+      this.hubConnection.stop()
+      .then(() => console.log("Connection stopped."))
+      .catch ((err: any) => console.error("Error stopping connection: ", err));
     }
-    console.log("Stopped hub connection.");
-    this.subscription?.unsubscribe();
-    console.log("Unsubscribed from subscription in HealthCheckService.");
+  }
+
+  /* Cleans up connections and subscriptions. */
+  ngOnDestroy(): void {
+    this.stopHubConnection();
+    // this.subscription?.unsubscribe();
+    this.destroyed$.next();
+    this.destroyed$.complete();
+    console.log("Unsubscribed in HealthCheckService.");
   }
 }
