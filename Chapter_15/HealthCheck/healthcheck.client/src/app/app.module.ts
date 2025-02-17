@@ -8,7 +8,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
-import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HealthCheckComponent } from './health-check/health-check.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -19,7 +18,6 @@ import { ConnectionServiceModule } from 'ng-connection-service';
   declarations: [
     AppComponent,
     HomeComponent,
-    FetchDataComponent,
     NavMenuComponent,
     HealthCheckComponent
   ],
