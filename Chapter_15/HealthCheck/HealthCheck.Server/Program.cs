@@ -14,9 +14,11 @@ builder.Services.AddHealthChecks()
     .AddCheck("ICMP_03",
         new ICMPHealthCheck("healthcheck-2025.crsoftware.biz", 100))
     .AddCheck("ICMP_04",
-        new ICMPHealthCheck("healthcheck-api-2025.crsoftware.biz", 100))
+        new ICMPHealthCheck("healthcheck-api-2025.crsoftware.biz", 100));
+    /*
     .AddCheck("ICMP_05",
         new ICMPHealthCheck("www.google.com", 100));
+    */
     /*
     .AddCheck("ICMP_03",
         new ICMPHealthCheck($"www.{Guid.NewGuid():N}.com", 100));

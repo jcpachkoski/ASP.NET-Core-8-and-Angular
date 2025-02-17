@@ -2,8 +2,8 @@ import { Injectable, OnDestroy} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import * as signalR from "@microsoft/signalr";
 import { environment } from './../../environments/environment';
-import { Subject, Subscription } from 'rxjs';
-import { tap, takeUntil } from 'rxjs/operators';
+import { Subject, of } from 'rxjs';
+import { takeUntil, catchError } from 'rxjs/operators';
 
 export interface Result {
   checks: Check[];
@@ -24,85 +24,103 @@ interface Check {
 export class HealthCheckService implements OnDestroy {
   constructor(private http: HttpClient) { }
 
+  private keepAliveConnection: boolean = true;
   private hubConnection!: signalR.HubConnection;
   private _result: Subject<Result> = new Subject<Result>();
-  public result$ = this._result.asObservable();
-  // subscription?: Subscription;
+  public readonly result$ = this._result.asObservable();
   private destroyed$ = new Subject<void>();
 
-  /* Starts the SignalR connection. */
+  private log(message: any, optionalParam?: any): void {
+    if (!environment.production) {
+      console.log(message);
+    }
+  }
+
   startHubConnection(): void {
-    // if (!this.hubConnection) {
+      if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
+        this.doSetup();
+        return;
+      }
+
       this.hubConnection = new signalR.HubConnectionBuilder()
         .configureLogging(signalR.LogLevel.Information)
         .withUrl(environment.baseUrl + 'api/health-hub', { withCredentials: false })
-        .build();
+      .build();
 
-      console.log("Starting connection...");
+      this.log("Starting connection...");
       this.hubConnection
         .start()
-        .then(() => console.log("Connection started."))
-        .catch((err: any) => console.error("Error starting connection: ", err));
-    // }
-    this.getHealthChecks();
+        .then(() => this.log("Connection started."))
+      .catch((err: any) => this.log("Error starting connection: ", err));
+
+      this.doSetup();
   }
 
-  /* Adds listeners for data updates from the server. */
+  doSetup(): void {
+    this.getHealthChecks();
+    this.addDataListeners();
+  }
+
   addDataListeners(): void {
-    console.log('Adding listeners');
+    this.log('Adding listeners');
     this.hubConnection.on('Update', (msg: string) => {
-      console.log("Update issued by SERVER for: " + msg);
+      this.log("Update issued by SERVER for: " + msg);
       this.getHealthChecks();
     });
 
     this.hubConnection.on('ClientUpdate', (msg: string) => {
-      console.log("Update issued by CLIENT for: " + msg);
+      this.log("Update issued by CLIENT for: " + msg);
       this.getHealthChecks();
+    });
+
+    this.hubConnection.onclose(error => {
+      if (this.keepAliveConnection) {
+        this.log("Connection closed due to error...reconnecting: ", error);
+        setTimeout(() => this.startHubConnection(), 3);
+      }
     });
   }
 
-  /* Fetches the latest health check data from the server. */
-  /*
   getHealthChecks(): void {
-    console.log("Fetching data...");
-    this.subscription = this.http.get<Result>(environment.baseUrl + 'api/health')
+    this.log("Fetching data...");
+    this.http.get<Result>(environment.baseUrl + 'api/health')
+      .pipe(
+        takeUntil(this.destroyed$),
+        catchError(error => {
+          this.log("Error fetching health checks: ", error);
+          return of({ checks: [], totalStatus: "unknown", totalResponseTime: 0 });
+        })
+      )
       .subscribe(result => {
         this._result.next(result);
-        console.log(result);
-      });
-  }
-  */
-
-  /* Fetches the latest health check data from the server. */
-  getHealthChecks(): void {
-    console.log("Fetching data...");
-    this.http.get<Result>(environment.baseUrl + 'api/health').pipe(takeUntil(this.destroyed$))
-      .subscribe(result => {
-        this._result.next(result);
-        console.log(result);
+        this.log(result);
       });
   }
 
-  /* Sends a client update to the server. */
   sendClientUpdate(): void {
     this.hubConnection.invoke('ClientUpdate', 'client test')
-      .catch(err => console.error("Error sending client update: ", err));
+      .catch(err => this.log("Error sending client update: ", err));
   }
 
   stopHubConnection(): void {
-    if (this.hubConnection) {
+    if (this.hubConnection && this.hubConnection.state !== signalR.HubConnectionState.Disconnected) {
       this.hubConnection.stop()
-      .then(() => console.log("Connection stopped."))
-      .catch ((err: any) => console.error("Error stopping connection: ", err));
+        .then(() => this.log("Connection stopped."))
+        .catch(err => this.log("Error stopping connection: ", err));
     }
   }
 
-  /* Cleans up connections and subscriptions. */
+  removeDataListeners(): void {
+    this.hubConnection.off('Update');
+    this.hubConnection.off('ClientUpdate');
+  }
+
   ngOnDestroy(): void {
+    this.keepAliveConnection = false;
+    this.removeDataListeners();
     this.stopHubConnection();
-    // this.subscription?.unsubscribe();
     this.destroyed$.next();
     this.destroyed$.complete();
-    console.log("Unsubscribed in HealthCheckService.");
+    this.log("Unsubscribed in HealthCheckService.");
   }
 }

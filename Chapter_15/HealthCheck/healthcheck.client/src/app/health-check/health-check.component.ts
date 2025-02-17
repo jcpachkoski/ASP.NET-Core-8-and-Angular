@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subscription, interval } from 'rxjs';
 import { HealthCheckService, Result } from './health-check.service';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-health-check',
@@ -8,23 +9,39 @@ import { HealthCheckService, Result } from './health-check.service';
   styleUrls: ['./health-check.component.scss']
 })
 export class HealthCheckComponent implements OnInit, OnDestroy {
-  // This code was tested and all works.  Put in Chapter 15 and deploy it to the Linux Server.
+  // This code was tested and all works, so can deploy it to the Linux Server.
   result$: Observable<Result | null>;
+  private intervalSubscription: Subscription | undefined;
+
   constructor(public service: HealthCheckService) {
     this.result$ = this.service.result$;
   }
 
   ngOnInit(): void {
     this.service.startHubConnection();
-    this.service.addDataListeners();
+    this.startInterval();
   }
 
-  onRefresh() {
+  startInterval(): void {
+    this.intervalSubscription = interval(15000).subscribe(() => {
+      this.service.sendClientUpdate();
+    });
+  }
+
+  stopInterval(): void {
+    if (this.intervalSubscription) {
+      this.intervalSubscription.unsubscribe();
+    }
+  }
+
+  onRefresh(): void {
     this.service.sendClientUpdate();
   }
 
   ngOnDestroy(): void {
-    // Necessary or get multiple calls to fetch data after leaving this component and coming back.
+    this.stopInterval();
+    // Necessary or get multiple calls to fetch data
+    // after leaving this component and coming back.
     this.service.ngOnDestroy();
   }
 }
