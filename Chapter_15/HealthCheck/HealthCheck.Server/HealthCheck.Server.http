@@ -1,6 +1,17 @@
-@HealthCheck.Server_HostAddress = http://localhost:5022
+@HealthCheck.Server_HostAddress = https://localhost:40443
 
-GET {{HealthCheck.Server_HostAddress}}/weatherforecast/
-Accept: application/json
+GET {{HealthCheck.Server_HostAddress}}/api/broadcast/Update
+
+###
+
+GET {{HealthCheck.Server_HostAddress}}/api/broadcast/update2
+
+###
+
+HEAD {{HealthCheck.Server_HostAddress}}/api/heartbeat
+
+###
+
+GET {{HealthCheck.Server_HostAddress}}/Error
 
 ###
