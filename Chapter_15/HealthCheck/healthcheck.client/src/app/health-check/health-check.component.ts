@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, Subscription, interval } from 'rxjs';
 import { HealthCheckService, Result } from './health-check.service';
-// import { ChangeDetectionStrategy } from '@angular/compiler';
 
 @Component({
   selector: 'app-health-check',
