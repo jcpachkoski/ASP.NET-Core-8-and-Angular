@@ -1,12 +1,13 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, Subscription, interval } from 'rxjs';
 import { HealthCheckService, Result } from './health-check.service';
-import { switchMap } from 'rxjs/operators';
+// import { ChangeDetectionStrategy } from '@angular/compiler';
 
 @Component({
   selector: 'app-health-check',
   templateUrl: './health-check.component.html',
-  styleUrls: ['./health-check.component.scss']
+  styleUrls: ['./health-check.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HealthCheckComponent implements OnInit, OnDestroy {
   // This code was tested and all works, so can deploy it to the Linux Server.
